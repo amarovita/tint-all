@@ -1,0 +1,6 @@
+{
+    "uuid": "tint-all@amarovita.github.com",
+    "name": "Tint All",
+    "description": "Color tint the entire gnome workspace. Based on grayscale-all extension.",
+    "shell-version": ["3.18.5"]
+}
