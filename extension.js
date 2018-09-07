@@ -21,15 +21,18 @@ const Main = imports.ui.main;
 let button;
 let extension_icon;
 let color_effect;
+let bc_effect;
 let fx_ndx;
 
 function _toggleEffect() {
     if (fx_ndx) {
         Main.uiGroup.remove_effect( color_effect[fx_ndx-1]);
+        Main.uiGroup.remove_effect( bc_effect[fx_ndx-1]);
     }
     fx_ndx = (fx_ndx + 1) % (color_effect.length+1);
     if (fx_ndx){	
         Main.uiGroup.add_effect( color_effect[fx_ndx-1]);
+        Main.uiGroup.add_effect( bc_effect[fx_ndx-1]);
     }
 }
 
@@ -39,6 +42,15 @@ function _tint(color) {
     cl = new Clutter.Color(color);
     fx.tint = cl;
     return fx;
+}
+
+function _bc(b, c){
+    fx = new Clutter.BrightnessContrastEffect();
+    b_cl = new Clutter.Color(b);
+    fx.brightness = b_cl;
+    c_cl = new Clutter.Color(c);
+    fx.contrast = c_cl;
+    return fx; 
 }
 
 function init() {
@@ -58,9 +70,16 @@ function init() {
 			_tint( {red:255, green:128, blue: 0, alpha:255} ),
 			_tint( {red:128, green:255, blue: 0, alpha:255} ),
 			_tint( {red:0, green:224, blue: 255, alpha:255} ),
-			_tint( {red:255, green:240, blue: 224, alpha:255} ),
+			_tint( {red:255, green:192, blue: 144, alpha:255} ),
 			new Clutter.DesaturateEffect()
 		]
+    bc_effect = [
+        _bc( {red:159, green:159, blue: 127, alpha:255}, {red:183, green:183, blue: 127, alpha:255} ),
+        _bc( {red:143, green:143, blue: 127, alpha:255}, {red:155, green:155, blue: 127, alpha:255} ),
+        _bc( {red:127, green:159, blue: 159, alpha:255}, {red:127, green:183, blue: 183, alpha:255} ),
+        _bc( {red:143, green:143, blue: 143, alpha:255}, {red:151, green:151, blue: 151, alpha:255} ),
+        _bc( {red:127, green:127, blue: 127, alpha:255}, {red:127, green:127, blue: 127, alpha:255} ),
+    ]
     fx_ndx = 0;
     //Signal connection
     button.connect('button-press-event', _toggleEffect);
