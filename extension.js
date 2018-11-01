@@ -23,34 +23,60 @@ let extension_icon;
 let color_effect;
 let bc_effect;
 let fx_ndx;
+let fx_lvl;
+let dfx;
+let bcfx;
+
+function _recalcEffect() {
+	if (fx_ndx){
+		dfx.factor = fx_lvl / 255;
+		_bcl(bc_v[fx_ndx-1],fx_lvl);
+	}
+}
+
+function _levelEffect(actor, event) {
+    if (fx_ndx){
+        if (event.get_scroll_direction() == Clutter.ScrollDirection.UP)
+            if (fx_lvl < 241)
+                fx_lvl += 15;
+        if (event.get_scroll_direction() == Clutter.ScrollDirection.DOWN)
+            if (fx_lvl > 14)
+                fx_lvl -= 15;
+        _recalcEffect();
+    }
+}
 
 function _toggleEffect() {
-    if (fx_ndx) {
-        Main.uiGroup.remove_effect( color_effect[fx_ndx-1]);
-        Main.uiGroup.remove_effect( bc_effect[fx_ndx-1]);
+    if (fx_ndx==0) {
+        Main.uiGroup.add_effect( bcfx );
+        Main.uiGroup.add_effect( dfx );
     }
-    fx_ndx = (fx_ndx + 1) % (color_effect.length+1);
-    if (fx_ndx){	
-        Main.uiGroup.add_effect( color_effect[fx_ndx-1]);
-        Main.uiGroup.add_effect( bc_effect[fx_ndx-1]);
+    fx_ndx = (fx_ndx + 1) % (bc_v.length+1);
+    _recalcEffect();
+    if (fx_ndx==0){	
+        Main.uiGroup.remove_effect( dfx );
+        Main.uiGroup.remove_effect( bcfx );
     }
 }
 
-
-function _tint(color) {
-    fx = new Clutter.ColorizeEffect();
-    cl = new Clutter.Color(color);
-    fx.tint = cl;
-    return fx;
+function _l(c, l){
+	return Math.round((c - 127)*l/255+127);
 }
 
-function _bc(b, c){
-    fx = new Clutter.BrightnessContrastEffect();
-    b_cl = new Clutter.Color(b);
-    fx.brightness = b_cl;
-    c_cl = new Clutter.Color(c);
-    fx.contrast = c_cl;
-    return fx; 
+function _cl(c, l){
+	return {
+		red:_l(c.red, l), 
+		green:_l(c.green, l), 
+		blue:_l(c.blue, l),
+		alpha: c.alpha 
+	};
+}
+
+function _bcl(bc, l){
+    b_cl = new Clutter.Color(_cl(bc[0],l));
+    bcfx.brightness = b_cl;
+    c_cl = new Clutter.Color(_cl(bc[1],l));
+    bcfx.contrast = c_cl;
 }
 
 function init() {
@@ -66,23 +92,23 @@ function init() {
     button.set_child(extension_icon);
 
     //Creation of effect
-    color_effect = [
-			_tint( {red:255, green:128, blue: 0, alpha:255} ),
-			_tint( {red:128, green:255, blue: 0, alpha:255} ),
-			_tint( {red:0, green:224, blue: 255, alpha:255} ),
-			_tint( {red:255, green:192, blue: 144, alpha:255} ),
-			new Clutter.DesaturateEffect()
-		]
-    bc_effect = [
-        _bc( {red:159, green:159, blue: 127, alpha:255}, {red:183, green:183, blue: 127, alpha:255} ),
-        _bc( {red:143, green:143, blue: 127, alpha:255}, {red:155, green:155, blue: 127, alpha:255} ),
-        _bc( {red:127, green:159, blue: 159, alpha:255}, {red:127, green:183, blue: 183, alpha:255} ),
-        _bc( {red:143, green:143, blue: 143, alpha:255}, {red:151, green:151, blue: 151, alpha:255} ),
-        _bc( {red:127, green:127, blue: 127, alpha:255}, {red:127, green:127, blue: 127, alpha:255} ),
+	dfx = new Clutter.DesaturateEffect();
+	bcfx = new Clutter.BrightnessContrastEffect();
+
+    bc_v = [
+        [ {red:143, green:71, blue: 0, alpha:255}, {red:143, green:135, blue: 127, alpha:255} ],
+//        [ {red:143, green:79, blue: 0, alpha:255}, {red:143, green:131, blue: 127, alpha:255} ],
+        [ {red:71, green:143, blue: 0, alpha:255}, {red:135, green:143, blue: 127, alpha:255} ],
+        [ {red:0, green:127, blue: 143, alpha:255}, {red:127, green:127, blue: 143, alpha:255} ],
+        [ {red:143, green:127, blue: 95, alpha:255}, {red:143, green:127, blue: 127, alpha:255} ],
+        [ {red:127, green:127, blue: 127, alpha:255}, {red:127, green:127, blue: 127, alpha:255} ],
     ]
+
     fx_ndx = 0;
+    fx_lvl = 255;
     //Signal connection
     button.connect('button-press-event', _toggleEffect);
+    button.connect('scroll-event', _levelEffect);
 }
 
 function enable() {
