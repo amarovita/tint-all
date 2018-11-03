@@ -20,8 +20,7 @@ const Main = imports.ui.main;
 
 let button;
 let extension_icon;
-let color_effect;
-let bc_effect;
+let bc_v;
 let fx_ndx;
 let fx_lvl;
 let dfx;
@@ -73,9 +72,9 @@ function _cl(c, l){
 }
 
 function _bcl(bc, l){
-    b_cl = new Clutter.Color(_cl(bc[0],l));
+    let b_cl = new Clutter.Color(_cl(bc[0],l));
     bcfx.brightness = b_cl;
-    c_cl = new Clutter.Color(_cl(bc[1],l));
+    let c_cl = new Clutter.Color(_cl(bc[1],l));
     bcfx.contrast = c_cl;
 }
 
