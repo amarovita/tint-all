@@ -97,7 +97,7 @@ function init() {
     bc_v = [
         [ {red:143, green:71, blue: 0, alpha:255}, {red:143, green:135, blue: 127, alpha:255} ],
 //        [ {red:143, green:79, blue: 0, alpha:255}, {red:143, green:131, blue: 127, alpha:255} ],
-        [ {red:71, green:143, blue: 0, alpha:255}, {red:135, green:143, blue: 127, alpha:255} ],
+        [ {red:63, green:127, blue: 0, alpha:255}, {red:127, green:127, blue: 127, alpha:255} ],
         [ {red:0, green:127, blue: 143, alpha:255}, {red:127, green:127, blue: 143, alpha:255} ],
         [ {red:143, green:127, blue: 95, alpha:255}, {red:143, green:127, blue: 127, alpha:255} ],
         [ {red:127, green:127, blue: 127, alpha:255}, {red:127, green:127, blue: 127, alpha:255} ],
