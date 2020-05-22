@@ -1,16 +1,50 @@
-This extension based on grayscale-all by laerne, found at https://github.com/laerne/desaturate_all .
+Tint all
+========
 
-Installation
-============
+This is a Gnome shell extension to give the whole screen a different
+color tint. It supports multiple colors tints in various gradations.
 
-Copy this folder to the gnome-shell extension folders, typically under `.local/share/gnome-shell/extensions`.
+The extension can be installed from the Gnome extension page:
 
-Using a terminal, you can do the following sequence of commands:
+https://extensions.gnome.org/extension/1471/tint-all/
 
-`$ git clone https://github.com/amarovita/tint-all.git`
+Click the extension icon to cycle between the various color tints:
 
-`$ mv tint-all ".local/share/gnome-shell/extensions/tint-all@amarovita.github.com"`
+- none (normal)
+- amber
+- green
+- cyan
+- sepia (like old photos)
+- grayscale
 
-Then restart gnome by pressing `ALT`+`F2`, then entering `r` and validating with `RETURN`.
+Use the mouse wheel to scroll over the extension icon to increase or
+decrease the intensity of the color effect.
 
-You can now enable the extension by browsing to https://extensions.gnome.org/local.
+Credits
+-------
+
+This extension is written by [Amaro Vita](https://github.com/amarovita).
+
+The code is based on the
+[grayscale-all](https://github.com/laerne/desaturate_all) extension by
+[laerne](https://github.com/laerne/).
+
+Development
+-----------
+
+Copy this folder to the gnome-shell extension folders, typically under
+`.local/share/gnome-shell/extensions`.
+
+In a terminal, you can use the following commands:
+
+``` sh
+git clone https://github.com/amarovita/tint-all.git`
+
+mv tint-all ".local/share/gnome-shell/extensions/tint-all@amarovita.github.com"
+```
+
+Then restart gnome by pressing `ALT`+`F2`, then entering `r` and
+validating with `RETURN`. Alternatively, log out and log in again.
+
+You can now enable the extension by browsing to
+https://extensions.gnome.org/local.
