@@ -2,7 +2,7 @@ Tint all
 ========
 
 This is a Gnome shell extension to give the whole screen a different
-color tint. It supports multiple colors tints in various gradations.
+color tint. It supports multiple color tints in various gradations.
 
 The extension can be installed from the Gnome extension page:
 
@@ -14,7 +14,7 @@ Click the extension icon to cycle between the various color tints:
 - amber
 - green
 - cyan
-- sepia (like old photos)
+- sepia (old photo)
 - grayscale
 
 Use the mouse wheel to scroll over the extension icon to increase or
@@ -25,8 +25,8 @@ Credits
 
 This extension is written by [Amaro Vita](https://github.com/amarovita).
 
-The code is based on the
-[grayscale-all](https://github.com/laerne/desaturate_all) extension by
+The code is partially based on the
+[desaturate_all](https://github.com/laerne/desaturate_all) extension by
 [laerne](https://github.com/laerne/).
 
 Development
