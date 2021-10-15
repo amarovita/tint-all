@@ -2,5 +2,7 @@
     "uuid": "tint-all@amarovita.github.com",
     "name": "Tint All",
     "description": "Colorize the entire gnome workspace. Amber, green, cyan, sepia and grayscale - just keep clicking extension icon. Scroll over extension icon to change fx level.",
-    "shell-version": ["3.18.5"]
+    "shell-version": ["3.32","3.34","3.36","3.38","40","41"]
 }
+
+
