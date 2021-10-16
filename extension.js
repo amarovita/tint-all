@@ -18,23 +18,96 @@ const Clutter = imports.gi.Clutter;
 const St = imports.gi.St;
 const Main = imports.ui.main;
 
-let button;
-let extension_icon;
-let bc_v;
-let fx_ndx;
-let fx_lvl;
-let dfx;
-let bcfx;
+let button, extension_icon;
+let bc_v, fx_ndx, fx_lvl, dfx, bcfx;
+let eid1, eid2;
+
+function enable() {
+    button = new St.Bin({
+        style_class: 'panel-button',
+        reactive: true,
+        can_focus: true,
+        // x_fill: true,
+        // y_fill: false,
+        track_hover: true
+    });
+    extension_icon = new St.Icon({
+        icon_name: 'applications-graphics-symbolic',
+        style_class: 'system-status-icon'
+    });
+    button.set_child(extension_icon);
+
+    eid1 = button.connect('button-press-event', _toggleEffect);
+    eid2 = button.connect('scroll-event', _levelEffect);
+
+    bc_v = [
+        [{ red: 143, green: 71, blue: 0, alpha: 255 }, { red: 143, green: 135, blue: 127, alpha: 255 }],
+        [{ red: 63, green: 127, blue: 0, alpha: 255 }, { red: 127, green: 127, blue: 127, alpha: 255 }],
+        [{ red: 0, green: 127, blue: 143, alpha: 255 }, { red: 127, green: 127, blue: 143, alpha: 255 }],
+        [{ red: 143, green: 127, blue: 95, alpha: 255 }, { red: 143, green: 127, blue: 127, alpha: 255 }],
+        [{ red: 127, green: 127, blue: 127, alpha: 255 }, { red: 127, green: 127, blue: 127, alpha: 255 }],
+    ]
+
+    dfx = new Clutter.DesaturateEffect();
+    bcfx = new Clutter.BrightnessContrastEffect();
+
+    fx_ndx = 0;
+    fx_lvl = 255;
+
+    Main.panel._rightBox.insert_child_at_index(button, 0);
+}
+
+function disable() {
+
+    if (fx_ndx) {
+        Main.uiGroup.remove_effect(dfx);
+        Main.uiGroup.remove_effect(bcfx);
+    }
+
+    if (button) {
+        Main.panel._rightBox.remove_child(button);
+        if (eid1) {
+            button.disconnect(eid1);
+            eid1 = null;
+        }
+        if (eid2) {
+            button.disconnect(eid1);
+            eid2 = null;
+        }
+        if (extension_icon) {
+            button.remove_child(extension_icon);
+            delete extension_icon;
+            extension_icon = null;
+        }
+        delete button;
+        button = null;
+    }
+    if (dfx) {
+        delete dfx;
+        dfx = null;
+    }
+
+    if (bcfx) {
+        delete bcfx;
+        dfx = null;
+    }
+
+    if (bc_v) {
+        delete bc_v;
+        bc_v = null;
+    }
+
+}
 
 function _recalcEffect() {
-	if (fx_ndx){
-		dfx.factor = fx_lvl / 255;
-		_bcl(bc_v[fx_ndx-1],fx_lvl);
-	}
+    if (fx_ndx) {
+        dfx.factor = fx_lvl / 255;
+        _bcl(bc_v[fx_ndx - 1], fx_lvl);
+    }
 }
 
 function _levelEffect(actor, event) {
-    if (fx_ndx){
+    if (fx_ndx) {
         if (event.get_scroll_direction() == Clutter.ScrollDirection.UP)
             if (fx_lvl < 241)
                 fx_lvl += 15;
@@ -46,74 +119,37 @@ function _levelEffect(actor, event) {
 }
 
 function _toggleEffect() {
-    if (fx_ndx==0) {
-        Main.uiGroup.add_effect( bcfx );
-        Main.uiGroup.add_effect( dfx );
+    if (fx_ndx == 0) {
+        Main.uiGroup.add_effect(bcfx);
+        Main.uiGroup.add_effect(dfx);
     }
-    fx_ndx = (fx_ndx + 1) % (bc_v.length+1);
+    fx_ndx = (fx_ndx + 1) % (bc_v.length + 1);
     _recalcEffect();
-    if (fx_ndx==0){	
-        Main.uiGroup.remove_effect( dfx );
-        Main.uiGroup.remove_effect( bcfx );
+    if (fx_ndx == 0) {
+        Main.uiGroup.remove_effect(dfx);
+        Main.uiGroup.remove_effect(bcfx);
     }
 }
 
-function _l(c, l){
-	return Math.round((c - 127)*l/255+127);
+function _l(c, l) {
+    return Math.round((c - 127) * l / 255 + 127);
 }
 
-function _cl(c, l){
-	return {
-		red:_l(c.red, l), 
-		green:_l(c.green, l), 
-		blue:_l(c.blue, l),
-		alpha: c.alpha 
-	};
+function _cl(c, l) {
+    return {
+        red: _l(c.red, l),
+        green: _l(c.green, l),
+        blue: _l(c.blue, l),
+        alpha: c.alpha
+    };
 }
 
-function _bcl(bc, l){
-    let b_cl = new Clutter.Color(_cl(bc[0],l));
+function _bcl(bc, l) {
+    let b_cl = new Clutter.Color(_cl(bc[0], l));
     bcfx.brightness = b_cl;
-    let c_cl = new Clutter.Color(_cl(bc[1],l));
+    let c_cl = new Clutter.Color(_cl(bc[1], l));
     bcfx.contrast = c_cl;
 }
 
 function init() {
-    //Creation of button
-    button = new St.Bin({ style_class: 'panel-button',
-                          reactive: true,
-                          can_focus: true,
-                          // x_fill: true,
-                          // y_fill: false,
-                          track_hover: true });
-    extension_icon = new St.Icon({ icon_name: 'applications-graphics-symbolic',
-                                   style_class: 'system-status-icon' });
-    button.set_child(extension_icon);
-
-    //Creation of effect
-	dfx = new Clutter.DesaturateEffect();
-	bcfx = new Clutter.BrightnessContrastEffect();
-
-    bc_v = [
-        [ {red:143, green:71, blue: 0, alpha:255}, {red:143, green:135, blue: 127, alpha:255} ],
-//        [ {red:143, green:79, blue: 0, alpha:255}, {red:143, green:131, blue: 127, alpha:255} ],
-        [ {red:63, green:127, blue: 0, alpha:255}, {red:127, green:127, blue: 127, alpha:255} ],
-        [ {red:0, green:127, blue: 143, alpha:255}, {red:127, green:127, blue: 143, alpha:255} ],
-        [ {red:143, green:127, blue: 95, alpha:255}, {red:143, green:127, blue: 127, alpha:255} ],
-        [ {red:127, green:127, blue: 127, alpha:255}, {red:127, green:127, blue: 127, alpha:255} ],
-    ]
-
-    fx_ndx = 0;
-    fx_lvl = 255;
-    //Signal connection
-    button.connect('button-press-event', _toggleEffect);
-    button.connect('scroll-event', _levelEffect);
-}
-
-function enable() {
-    Main.panel._rightBox.insert_child_at_index(button, 0);
-}
-
-function disable() {
-    Main.panel._rightBox.remove_child(button);
 }
